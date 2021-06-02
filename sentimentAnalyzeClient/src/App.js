@@ -11,6 +11,10 @@ class App extends React.Component {
           sentiment:true
         }
   
+    componentDidMount(){
+        document.title = "Sentiment Analyzer";
+    }
+
   renderTextArea = ()=>{
     document.getElementById("textinput").value = "";
     if(this.state.mode === "url") {
@@ -43,6 +47,7 @@ class App extends React.Component {
     } else {
       url = url+"/text/sentiment?text="+document.getElementById("textinput").value;
     }
+    //console.log("url", url);
     ret = axios.get(url);
     ret.then((response)=>{
 
@@ -50,10 +55,11 @@ class App extends React.Component {
 
       this.setState({sentimentOutput:response.data});
       let output = response.data;
+      //console.log(output);
       if(response.data === "positive") {
         output = <div style={{color:"green",fontSize:20}}>{response.data}</div>
       } else if (response.data === "negative"){
-        output = <div style={{color:"red",fontSize:20}}>{response.data}</div>
+        output = <div style={{color:"yellow",fontSize:20}}>{response.data}</div>
       } else {
         output = <div style={{color:"orange",fontSize:20}}>{response.data}</div>
       }
@@ -68,12 +74,13 @@ class App extends React.Component {
     if(this.state.mode === "url") {
       url = url+"/url/emotion?url="+document.getElementById("textinput").value;
     } else {
-      url = url+"/text/emotion/?text="+document.getElementById("textinput").value;
+      url = url+"/text/emotion/?text=\""+document.getElementById("textinput").value + "\"";
     }
+    //console.log(url);
     ret = axios.get(url);
 
     ret.then((response)=>{
-      this.setState({sentimentOutput:<EmotionTable emotions={response.data}/>});
+      this.setState({sentimentOutput:<EmotionTable emotions={JSON.stringify(response.data)}/>});
   });
   }
   
